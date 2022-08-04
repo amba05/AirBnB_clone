@@ -50,7 +50,7 @@ class FileStorage:
             obj_dict[key] = value
 
         with open(filename, mode="w", encoding="UTF-8") as jsonfile:
-            json.dump(obj_dict, jsonfile)
+            json.dump(str(obj_dict), jsonfile)
 
 
     def reload(self):

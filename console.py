@@ -5,6 +5,12 @@
 import cmd
 from models import storage
 from models.base_model import BaseModel
+from models.user import User
+from models.place import Place
+from models.city import City
+from models.amenity import Amenity
+from models.state import State
+from models.review import Review
 import shlex
 
 
@@ -45,7 +51,7 @@ class HBNBCommand(cmd.Cmd):
 
     def emptyline(self):
         """Do nothing upon receiving an empty line."""
-        return cmd.Cmd.emptyline(self)
+        pass
 
     def do_create(self, args):
         """Creates a new instance of BaseModel

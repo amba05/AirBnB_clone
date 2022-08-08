@@ -53,6 +53,10 @@ class HBNBCommand(cmd.Cmd):
         """Do nothing upon receiving an empty line."""
         pass
 
+    def help_help(self):
+        """Prints help command description"""
+        print("Provides description of a given command")
+
     def do_create(self, args):
         """Creates a new instance of BaseModel
         Args:

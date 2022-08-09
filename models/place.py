@@ -2,6 +2,7 @@
 """
 Place creation class
 """
+import uuid
 from models.base_model import BaseModel
 
 

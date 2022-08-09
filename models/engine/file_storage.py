@@ -41,8 +41,8 @@ class FileStorage:
             Args:
                 obj (dict) : An instance object.
         '''
-        key = str(obj.__class__.__name__) + "." + str(obj.id)
-        type(self).__objects[key] = obj
+        objNameId = obj.__class__.__name__ + "." + obj.id
+        type(self).__objects[objNameId] = obj
 
     def save(self):
         """
@@ -52,27 +52,33 @@ class FileStorage:
             list_objs (list): A list of inherited Base instances.
         """
 
-        obj_dict = {}
+        with open(type(self).__file_path, "w", encoding='utf-8') as file:
+            dict_storage = {}
+            for key, val in type(self).__objects.items():
+                dict_storage[key] = val.to_dict()
+            json.dump(dict_storage, file)
 
-        for key, val in type(self).__objects.items():
-            obj_dict[key] = val.to_dict()
-
-        with open(type(self).__file_path, "w", encoding="UTF-8") as jsonfile:
-            json.dump(obj_dict, jsonfile)
 
     def reload(self):
-        filename = type(self).__file_path
+        """Deserializes the Json file to objects if it exists"""
         try:
-            with open(filename, mode="r", encoding="UTF-8") as jsonfile:
-                type(self).__objects = json.load(jsonfile)
+            with open(type(self).__file_path, encoding='utf-8') as file:
+                objdict = json.load(file)
 
+                # Explanation - get the classname from each
+                # entry to the json file
+                # then use it to get the obj class e.g BaseModel
+                # from the classes list
+                # in model __init__ file and initialize the
+                # object with the **kwargs
+                for obj in objdict.values():
+                    cls_name = obj["__class__"]
+                    del obj["__class__"]
+                    self.new(eval(cls_name)(**obj))
+        except FileNotFoundError:
+            return
+                
                 for key, val in type(self).__objects.items():
-                    # Explanation - get the classname from each
-                    # entry to the json file
-                    # then use it to get the obj class e.g BaseModel
-                    # from the classes list
-                    # in model __init__ file and initialize the
-                    # object with the **kwargs
                     class_name = val['__class__']
                     del val["__class__"]
                     type(self).__objects[key] = eval(class_name)(**val)

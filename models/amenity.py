@@ -3,6 +3,7 @@
 Defines amenity
 """
 from models.base_model import BaseModel
+import uuid
 
 
 class Amenity(BaseModel):

@@ -1,6 +1,7 @@
 #!/usr/bin/python3
-
-import uuid
+"""Defines all common attributes/methods for other classes
+"""
+from uuid import uuid4
 from datetime import datetime
 import models
 
@@ -14,41 +15,40 @@ class BaseModel:
             *args (any): Unused.
             **kwargs (dict): Key/value pairs of attributes.
         """
+        self.id = str(uuid4())
+        self.created_at = datetime.now()
+        self.updated_at = datetime.now()
 
-        if (len(kwargs) == 0):
-            self.id = str(uuid.uuid4())
-            self.created_at = datetime.now()
-            self.updated_at = datetime.now()
+        if any(kwargs):
+            fmt = '%Y-%m-%dT%H:%M:%S.%f'
+            for key, value in kwargs.items():
+                if key == '__class__':
+                    continue
+                if key == 'created_at' or key == 'updated_at':
+                    value = datetime.strptime(value, fmt)
+                setattr(self, key, value)
+        else:
             models.storage.new(self)
 
-        else:
-            format_data = "%Y-%m-%dT%H:%M:%S.%f"
-            kwargs["created_at"] = datetime.strptime(
-                    kwargs["created_at"], format_data)
+    def save(self):
+        """Updates updated_at with the current datetime"""
+        self.updated_at = datetime.now()
+        models.storage.save()
 
-            kwargs["updated_at"] = datetime.strptime(
-                    kwargs["updated_at"], format_data)
+    def to_dict(self):
+        """Returns a dictionary that contains all
+        keys/values of the instance"""
 
-            for key, val in kwargs.items():
-                if "__class__" not in key:
-                    setattr(self, key, val)
+        clsName = self.__class__.__name__
+        classDict = self.__dict__.copy()
+        classDict['updated_at'] = self.updated_at.isoformat()
+        classDict['created_at'] = self.created_at.isoformat()
+        classDict['__class__'] = clsName
+
+        return classDict
 
     def __str__(self):
         """Representation of BaseModel instances"""
 
         clsName = self.__class__.__name__
         return "[{}] ({}) {}".format(clsName, self.id, self.__dict__)
-
-    def save(self):
-        self.updated_at = datetime.now()
-        models.storage.save()
-
-    def to_dict(self):
-
-        format_data = "%Y-%m-%dT%H:%M:%S.%f"
-        dct_cp = dict(self.__dict__)
-        dct_cp['__class__'] = self.__class__.__name__
-        dct_cp['updated_at'] = self.updated_at.strftime(format_data)
-        dct_cp['created_at'] = self.created_at.strftime(format_data)
-
-        return (dct_cp)

@@ -77,11 +77,3 @@ class FileStorage:
                     self.new(eval(cls_name)(**obj))
         except FileNotFoundError:
             return
-                
-                for key, val in type(self).__objects.items():
-                    class_name = val['__class__']
-                    del val["__class__"]
-                    type(self).__objects[key] = eval(class_name)(**val)
-
-        except FileNotFoundError:
-            pass

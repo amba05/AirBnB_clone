@@ -200,7 +200,7 @@ class HBNBCommand(cmd.Cmd):
                 return
 
     def do_count(self, args):
-        """Count instance of class
+        """ Count instance of class
             Args:
             args (line): command line arguement
         """

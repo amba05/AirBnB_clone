@@ -12,5 +12,6 @@ from models.city import City
 from models.amenity import Amenity
 from models.state import State
 
+
 storage = FileStorage()
 storage.reload()

@@ -2,6 +2,7 @@
 """
 Defines review
 """
+import uuid
 from models.base_model import BaseModel
 
 

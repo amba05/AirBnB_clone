@@ -1,0 +1,13 @@
+/*Use line-height with the same value as height 
+to keep text centered,set the footer`s position 
+to fixed and bottom to 0px to position footer at bottom */
+
+footer {
+    background-color: #00FF00; 
+    height: 60px; 
+    width: 100%; 
+    text-align: center; 
+    line-height: 60px; 
+    position: fixed; 
+    bottom: 0px;
+}
